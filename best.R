@@ -1,5 +1,7 @@
+source('utils.R')
+
 best <- function (state, outcome) {
-   df <- read.csv('data/outcome-of-care-measures.csv', colClasses = 'character')
+   df <- load_outcome_data()
 
    valid_outcomes = c('heart attack', 'heart failure', 'pneumonia')
 
@@ -19,14 +21,4 @@ best <- function (state, outcome) {
    column = df[, column_idx]
 
    na.exclude(df[column == min(column, na.rm=TRUE), name_column])[1]
-}
-
-validate_arguments <- function(args) {
-    if (!args$state %in% args$valid_states) {
-        stop('invalid state')
-    }
-
-    if (!args$outcome %in% args$valid_outcomes) {
-        stop('invalid outcome')
-    }
 }

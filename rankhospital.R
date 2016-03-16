@@ -22,8 +22,7 @@ rankhospital <- function(state, outcome, num='best') {
 
     hospitals <- na.exclude(df[order(column), name_column])
 
-    if (num == 'best') num <- 1
-    if (num == 'worst') num <- length(hospitals)
+    num <- convert_num(num, length(hospitals))
 
     hospitals[num]
 }

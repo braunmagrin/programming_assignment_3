@@ -12,17 +12,24 @@ rankall <- function (outcome, num='best') {
     column_idx = columns[outcome]
 
     df[, column_idx] <- as.numeric(df[, column_idx])
-
-    num <- convert_num(num, nrow(df))
-
     df <- df[order(df[,column_idx]),]
-    # df <- na.omit(df[,c(name_column, state_column, column_idx)])
 
-    res <- aggregate(df[,c(name_column,column_idx)],
-                     by=list(df[,state_column]), FUN=function(x) {x[num]})
-#     aggregate(df[,c(1,3)],
-#               by=list(df[,2]), FUN=function(x) {x[num]})
-    res <- res[,2:1]
-    names(res) <- c('hospital', 'state')
+    states <- factor(df[,state_column])
+    df_by_state <- split(df, states)
+
+    col_names <- c('hospital', 'state')
+
+    res <- sapply(df_by_state,
+                  FUN=function(x) {get_nth_element(x=x, n=num,
+                                                   c(name_column,state_column),
+                                                   col_names)})
+
+    data.frame(t(res))
+}
+
+get_nth_element <- function(x, n, columns, col_names) {
+    n <- convert_num(n, nrow(x))
+    res <- na.omit(x[,columns])[n,]
+    names(res) <- col_names
     res
 }

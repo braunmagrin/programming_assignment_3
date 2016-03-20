@@ -18,18 +18,19 @@ rankall <- function (outcome, num='best') {
     df_by_state <- split(df, states)
 
     col_names <- c('hospital', 'state')
+    columns <- c(name_column,state_column,column_idx)
 
     res <- sapply(df_by_state,
                   FUN=function(x) {get_nth_element(x=x, n=num,
-                                                   c(name_column,state_column),
-                                                   col_names)})
+                                                   columns, col_names)})
 
     data.frame(t(res))
 }
 
 get_nth_element <- function(x, n, columns, col_names) {
-    n <- convert_num(n, nrow(x))
-    res <- na.omit(x[,columns])[n,]
+    res <- na.omit(x[,columns])
+    n <- convert_num(n, nrow(res))
     names(res) <- col_names
-    res
+
+    res[n,1:2]
 }
